@@ -13,7 +13,7 @@ Configurer un **workflow CI/CD avec GitHub Actions** pour :
 2. le **déploiement continu vers un environnement de staging**, sous la forme d'une image Docker publiée automatiquement sur GHCR à chaque push sur `main`.
 
 Le cœur de ce dépôt est donc le **pipeline** (`.github/workflows/ci-cd.yml`). L'application
-qui l'accompagne — une petite API `text-utils` (Node + TypeScript + Express) — n'est qu'un
+qui l'accompagne, une petite API `text-utils` (Node + TypeScript + Express), n'est qu'un
 **support réaliste** : elle est volontairement minimale mais réellement testable et conteneurisable.
 
 ## Le pipeline en un schéma
@@ -115,7 +115,7 @@ npm run test:watch # Tests en mode surveillance
 ## Exécution via Docker
 
 L'image de staging est publiée automatiquement par le pipeline sur **GHCR**. Le nom de
-l'image suit le propriétaire du dépôt **en minuscules** (`moutacdie2000`) — c'est une
+l'image suit le propriétaire du dépôt **en minuscules** (`moutacdie2000`), c'est une
 contrainte de GHCR, d'où l'étape du workflow qui met le propriétaire en minuscules.
 
 ```bash
@@ -137,17 +137,17 @@ ne conserve que les artefacts de production et s'exécute sous un **utilisateur 
 
 Le workflow `.github/workflows/ci-cd.yml` se compose de **deux jobs**.
 
-### Job `test` — intégration continue (CI)
+### Job `test`, intégration continue (CI)
 
 Déclenché à chaque `push` sur `main` **et** à chaque `pull_request` ciblant `main`. Étapes :
 
-1. `actions/checkout` — récupération du code ;
-2. `actions/setup-node` (Node 20, cache npm activé) — environnement d'exécution ;
-3. `npm ci` — installation reproductible des dépendances ;
-4. `npm run build` — compilation TypeScript (échoue si erreur de typage) ;
-5. `npm test` — exécution de **tous** les tests Vitest.
+1. `actions/checkout`, récupération du code ;
+2. `actions/setup-node` (Node 20, cache npm activé), environnement d'exécution ;
+3. `npm ci`, installation reproductible des dépendances ;
+4. `npm run build`, compilation TypeScript (échoue si erreur de typage) ;
+5. `npm test`, exécution de **tous** les tests Vitest.
 
-### Job `deploy-staging` — déploiement continu (CD)
+### Job `deploy-staging`, déploiement continu (CD)
 
 - `needs: test` : ne s'exécute que si le job `test` a **réussi** (gate de qualité).
 - `if: github.event_name == 'push' && github.ref == 'refs/heads/main'` : ne se déclenche
@@ -161,13 +161,13 @@ Déclenché à chaque `push` sur `main` **et** à chaque `pull_request` ciblant 
 1. `checkout` du code ;
 2. calcul du **propriétaire en minuscules** (`${{ github.repository_owner }}` → minuscules),
    requis par GHCR ;
-3. `docker/setup-buildx-action` — moteur de build avancé + cache ;
-4. `docker/login-action` — connexion à `ghcr.io` avec l'utilisateur `${{ github.actor }}`
+3. `docker/setup-buildx-action`, moteur de build avancé + cache ;
+4. `docker/login-action`, connexion à `ghcr.io` avec l'utilisateur `${{ github.actor }}`
    et le jeton intégré `${{ secrets.GITHUB_TOKEN }}` ;
-5. `docker/build-push-action` — construction et **publication** de l'image avec trois tags :
-   - `:latest` — dernière image en date,
-   - `:staging` — image de l'environnement de staging,
-   - `:<github.sha>` — image immuable tracée par commit.
+5. `docker/build-push-action`, construction et **publication** de l'image avec trois tags :
+   - `:latest`, dernière image en date,
+   - `:staging`, image de l'environnement de staging,
+   - `:<github.sha>`, image immuable tracée par commit.
 
 > **Aucune clé secrète externe n'est requise.** Le jeton `GITHUB_TOKEN` fourni
 > automatiquement par GitHub Actions suffit pour publier sur GHCR.
