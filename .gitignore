@@ -1,0 +1,22 @@
+# Dépendances
+node_modules/
+
+# Artefacts de build
+dist/
+
+# Couverture de tests
+coverage/
+
+# Variables d'environnement (le modèle .env.example est versionné)
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Divers / OS / éditeurs
+.DS_Store
+.vscode/
+.idea/
